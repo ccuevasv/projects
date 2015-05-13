@@ -15,7 +15,6 @@ private Double lastY;
 private Double[][] xy = new Double[3][3];
 private char[] dictionary = {'a','b','c'};
 
-HashMap<String, Double> hash = new HashMap<>();
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -23,20 +22,7 @@ HashMap<String, Double> hash = new HashMap<>();
 	}
 
 	
-	public void calculate(){
-
-	hash.put("a", 0.2);
-	hash.put("b", 0.5);
-	hash.put("c", 0.3);
 	
-	xy[0][0] = 0.0;
-	xy[0][1] = 0.2;
-	xy[1][0] = 0.2;
-	xy[1][1] = 0.7;
-	xy[2][0] = 0.7;
-	xy[2][1] = 1.0;
-	
-	}
 	
 	public void codificate(String message){
 		calculate();
@@ -90,12 +76,30 @@ HashMap<String, Double> hash = new HashMap<>();
 		System.out.println("binaryA "+binaryA+" binaryB "+binaryB);
 	}
 
-
+	
 	private double redondear(double num) {
 		return Math.rint(num*100)/100;
 	}
+	
+	
+	/**
+	 * Calcula el valor de los rangos a[0],b[1],c[2]
+	 */
+	public void calculate(){
+	
+		xy[0][0] = 0.0;
+		xy[0][1] = 0.2;
+		xy[1][0] = 0.2;
+		xy[1][1] = 0.7;
+		xy[2][0] = 0.7;
+		xy[2][1] = 1.0;
+	
+	}
 
-
+	
+	/**
+	 * De acuerdo al simbolo que ingresa(a,b,c) regresa su posición(0,1,2) para obtener el valor de su rango
+	 */
 	public int indexOf(char w){
 		for(int i=0;i<dictionary.length;i++){
 			if(w == dictionary[i])
@@ -141,7 +145,9 @@ HashMap<String, Double> hash = new HashMap<>();
 		
 	}
 
-
+	/**
+	 * De acuerdo al index identifica a que simbolo del diccionario pertenece
+	 */
 	private void identifyIndex(Double index) {
 		
 		if((index >= xy[0][0]) && (index <= xy[0][1])){
@@ -160,7 +166,7 @@ HashMap<String, Double> hash = new HashMap<>();
 		}
 	}
 
-
+	
 	private String reverse(String binary) {
 		String result ="";
 		for(int i=1;i<=binary.length();i++){
