@@ -93,12 +93,12 @@ private char[] dictionary = {'a','b','c'};
 		xy[1][1] = 0.7;
 		xy[2][0] = 0.7;
 		xy[2][1] = 1.0;
-	
+		
 	}
 
 	
 	/**
-	 * De acuerdo al simbolo que ingresa(a,b,c) regresa su posición(0,1,2) para obtener el valor de su rango
+	 * De acuerdo al simbolo que ingresa(a,b,c) regresa su posiciï¿½n(0,1,2) para obtener el valor de su rango
 	 */
 	public int indexOf(char w){
 		for(int i=0;i<dictionary.length;i++){
