@@ -17,7 +17,7 @@ public class TestCode {
 	@Test
 	public void testCodifier(){
 		Codificador arit = new Codificador();
-		//arit.codificate("cdba");
+		arit.codificate("cdba");
 		
 		
 	}

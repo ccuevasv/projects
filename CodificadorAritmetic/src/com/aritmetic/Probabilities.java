@@ -10,7 +10,9 @@ import java.util.Map.Entry;
 public class Probabilities {
 	
 	private char[] message;
+	private HashMap<String, Double[]> ranges;
 	private String[] uniqueValues;
+	private HashMap<String, Double> probabilities;
 	
 	public Probabilities(String message) {
 		this.message = toArray(message);
@@ -34,6 +36,12 @@ public class Probabilities {
 	
 	private void initializer() {
 		uniqueValues = uniqueValues(message);
+		probabilities = getProbabilities();
+		ranges = getRanges();
+	}
+	
+	public char[] getArrayMessage() {
+		return message;
 	}
 	
 	private char[] toArray(String message) {
@@ -50,6 +58,24 @@ public class Probabilities {
 		return unique.toArray(new String[unique.size()]);
 	}
 	
+	public double getProbabilitie(String symbol) {
+		return probabilities.get(symbol); // Posible error ya que en teoria debe de entrar un string y estoy pasando como mensaje un char
+	}
+	
+	public Double[] getRangeOf(String symbol){
+		return ranges.get(symbol);
+	}
+	
+	public double getX(String symbol) {
+		return ranges.get(symbol)[0];
+	}
+	
+	public double getY(String symbol) {
+		return ranges.get(symbol)[1];
+	}
+	
+	
+	
 	public HashMap<String, Double> getProbabilities() {
 		HashMap<String, Double> probabilities = new HashMap<String, Double>();
 		double size = message.length;
@@ -63,18 +89,19 @@ public class Probabilities {
 			probabilities.put(uniqueValues[i], (count/size));
 		}
 		return probabilities;
-	}
+	}	
 	
 	@SuppressWarnings("rawtypes")
-	public List<Double[]> getRange() {
-		List<Double[]> ranges = new ArrayList<Double[]>();
+	public HashMap<String, Double[]> getRanges() {
+		// List<Double[]> ranges = new ArrayList<Double[]>();
+		HashMap<String, Double[]> ranges = new HashMap<String, Double[]>();
 		HashMap<String, Double> probs = getProbabilities();
 		Iterator<Entry<String, Double>> it = probs.entrySet().iterator();
 		double last = 0.0;
 		while (it.hasNext()) {
 			Map.Entry pair = (Map.Entry) it.next();
-			ranges.add(new Double[]{last, (last+((double) pair.getValue()))});
-			last = (double) pair.getValue();
+			ranges.put((String) pair.getKey(), new Double[]{last, (last+((double) pair.getValue()))});
+			last += (double) pair.getValue();
 			it.remove();
 		}
 		return ranges;
