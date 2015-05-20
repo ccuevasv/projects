@@ -26,8 +26,8 @@ public class ArithmeticCoding {
 			
 			
 			
-			lower_limit = getNewLowerLimit(probs.getX(message.charAt(i)+""));
 			upper_limit = getNewUpperLimit(probs.getY(message.charAt(i)+""));
+			lower_limit = getNewLowerLimit(probs.getX(message.charAt(i)+""));
 			System.out.println("low "+lower_limit+" up "+upper_limit);
 			
 			iteration.put("xy", probs.getProbabilitie(message.charAt(i)+""));
