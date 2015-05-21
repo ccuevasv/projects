@@ -1,3 +1,4 @@
+import java.io.ObjectInputStream.GetField;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,22 +12,36 @@ import com.aritmetic.Probabilities;
 
 public class main {
 	
+	private static Probabilities probs;
+	
 	public static void main(String[] args) {
 		testProbabilities();
 		testRange();
 		testEncode();
+		testDecode();
 	}
 	
 	private static void testEncode() {
 		ArithmeticCoding ac = new ArithmeticCoding();
-		System.out.println(ac.encode("cdba"));
+		String msg = "cdba";
+		System.out.println(ac.encode(msg));
 		System.out.println("---------------------------------------");
 		System.out.println("---------------------------------------");
-//		HashMap<String, HashMap<String, Object>> encode_output = ac.getEncodeOutput();
-//		Iterator <Entry<String, HashMap<String, Object>>> it = encode_output.entrySet().iterator();
-//		while(it.hasNext()){
-//			
-//		}
+		HashMap<Integer, HashMap<String, String>> encode_output = ac.getEncodeOutput();
+		Iterator <Entry<Integer, HashMap<String, String>>> it = encode_output.entrySet().iterator();
+		for (int i = 0; i < msg.length(); i++) {
+			System.out.print(" Simbolo: "+encode_output.get(i).get("symbol"));
+			System.out.print(" Rango: "+encode_output.get(i).get("range"));
+			System.out.print(" XY: "+encode_output.get(i).get("xy"));
+			System.out.print(" Rangos: "+encode_output.get(i).get("ranges"));
+			System.out.println();
+		}
+		probs = ac.getProbs();
+	}
+	
+	private static void testDecode() {
+		ArithmeticCoding ac = new ArithmeticCoding();
+		ac.decode("10001", probs);
 	}
 	
 	private static void testRange() {

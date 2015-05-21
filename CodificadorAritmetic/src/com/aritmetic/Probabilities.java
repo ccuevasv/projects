@@ -55,6 +55,7 @@ public class Probabilities {
 				unique.add(message[i]+"");
 			}
 		}
+		System.out.println(unique);
 		return unique.toArray(new String[unique.size()]);
 	}
 	
@@ -93,7 +94,6 @@ public class Probabilities {
 	
 	@SuppressWarnings("rawtypes")
 	public HashMap<String, Double[]> getRanges() {
-		// List<Double[]> ranges = new ArrayList<Double[]>();
 		HashMap<String, Double[]> ranges = new HashMap<String, Double[]>();
 		HashMap<String, Double> probs = getProbabilities();
 		Iterator<Entry<String, Double>> it = probs.entrySet().iterator();
