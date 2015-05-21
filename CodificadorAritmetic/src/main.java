@@ -17,7 +17,7 @@ public class main {
 	private static String original_msg;
 	
 	public static void main(String[] args) {
-		original_msg = "francisco";
+		original_msg = "jaghsdsed";
 		
 		System.out.println("Probabilidades");
 		testProbabilities();

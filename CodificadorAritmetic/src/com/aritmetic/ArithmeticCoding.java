@@ -1,6 +1,7 @@
 package com.aritmetic;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.util.HashMap;
 
 import javax.naming.LimitExceededException;
@@ -12,10 +13,11 @@ public class ArithmeticCoding {
 	private Probabilities probs;
 	private char[] message;
 	private double binary_message;
-	private double lower_limit;
-	private double upper_limit;
-	private double range;
-	private double Z;
+	private BigDecimal lower_limit;
+	private BigDecimal upper_limit;
+	private BigDecimal range;
+	private BigDecimal Z;
+	private int decimals = 10;
 	public HashMap<Integer, HashMap<String, String>> encode_output;
 	public HashMap<Integer, HashMap<String, String>> decode_output;
 	
@@ -32,7 +34,7 @@ public class ArithmeticCoding {
 			upper_limit = getNewUpperLimit(probs.getY(original_message.charAt(i)+""));
 			lower_limit = getNewLowerLimit(probs.getX(original_message.charAt(i)+""));
 			Double[] xy = probs.getRangeOf(original_message.charAt(i)+"");
-			double [] r = new double[]{lower_limit, upper_limit};
+			BigDecimal [] r = new BigDecimal[]{lower_limit, upper_limit};
 			
 			iteration.put("xy", xy[0]+", "+xy[1]);
 			iteration.put("symbol", original_message.charAt(i)+"");
@@ -43,7 +45,7 @@ public class ArithmeticCoding {
 			range = getNewRange();
 		}
 		encode_output = output;
-		return getBinaryIdentity(lower_limit, upper_limit);
+		return getBinaryIdentity(lower_limit.floatValue(), upper_limit.floatValue());
 	}
 	
 	public String decode(String msg, Probabilities probabilities){
@@ -59,8 +61,8 @@ public class ArithmeticCoding {
 		while (!last_char.equals("#")) {
 			HashMap<String, String> iteration = new HashMap<String, String>();
 			
-			double otherZ = getZ();
-			last_char = probs.getSymbol(otherZ);
+			BigDecimal otherZ = getZ();
+			last_char = probs.getSymbol(otherZ.floatValue());
 			xy = probs.getRangeOf(last_char);
 			System.out.println(otherZ);
 			System.out.println(last_char);
@@ -83,29 +85,29 @@ public class ArithmeticCoding {
 		return message;
 	}
 	
-	private double getZ() {
-		return ((probs.redondear(Z)-probs.redondear(lower_limit))/probs.redondear(range));
+	private BigDecimal getZ() {
+		return (Z.subtract(lower_limit).setScale(decimals, BigDecimal.ROUND_HALF_UP)).divide(range, decimals, BigDecimal.ROUND_HALF_UP);
 	}
 	
-	private double reverse(String binary) {
+	private BigDecimal reverse(String binary) {
 		double result = 0.0;
 		for (int i = 0; i < binary.length(); i++) {
 			double exp = ((-1) * (i+1));
 			result += Integer.parseInt(binary.charAt(i)+"") * Math.pow(2, exp);
 		}
-		return result;
+		return new BigDecimal(result);
 	}
 	
-	private String getBinaryIdentity(Double a, Double b){
+	private String getBinaryIdentity(Float f, Float g){
 		String binaryA = "";
 		String binaryB = "";
 		
 		for(int i=0;i<16;i++){
-			a = a>1 ? (a -1)*2 : a*2;
-			binaryA = binaryA + a.toString().substring(0,1);
+			f = f>1 ? (f -1)*2 : f*2;
+			binaryA = binaryA + f.toString().substring(0,1);
 			
-			b = b>1 ? (b-1)*2 : b*2;
-			binaryB = binaryB + b.toString().substring(0,1);
+			g = g>1 ? (g-1)*2 : g*2;
+			binaryB = binaryB + g.toString().substring(0,1);
 
 			if(!binaryA.equals(binaryB))
 				break;
@@ -113,18 +115,19 @@ public class ArithmeticCoding {
 		return binaryB;
 	}
 	
-	private double getNewRange() {
+	private BigDecimal getNewRange() {
 //		double range = probs.redondear(upper_limit) - probs.redondear(lower_limit);
 //		return probs.redondear(range);
-		return (upper_limit - lower_limit);
+		return (upper_limit.subtract(lower_limit)).setScale(decimals, BigDecimal.ROUND_HALF_UP);
 	}
 	
-	private double getNewLowerLimit(double x) {
-		return (lower_limit + (range * x));
+	private BigDecimal getNewLowerLimit(double x) {
+//		return (lower_limit + (range * x));
+		return (lower_limit.add((range.multiply(new BigDecimal(x))))).setScale(decimals, BigDecimal.ROUND_HALF_UP);
 	}
 	
-	private double getNewUpperLimit(double y) {
-		return (lower_limit + (range * y));
+	private BigDecimal getNewUpperLimit(double y) {
+		return (lower_limit.add((range.multiply(new BigDecimal(y))))).setScale(decimals, BigDecimal.ROUND_HALF_UP);
 	}
 	
 	public HashMap<Integer, HashMap<String, String>> getEncodeOutput(){
@@ -143,16 +146,16 @@ public class ArithmeticCoding {
 		System.out.println(original_message);
 		probs = new Probabilities(original_message);
 		message = probs.getArrayMessage();
-		lower_limit = 0.0;
-		upper_limit = 0.0;
-		range = 1.0;
+		lower_limit = new BigDecimal(0.0);
+		upper_limit = new BigDecimal(0.0);
+		range = new BigDecimal(1.0);
 	}
 	
 	private void initializeDecode() {
 		message = probs.getArrayMessage();
-		lower_limit = 0.0;
-		upper_limit = 1.0;
-		range = 1.0;
+		lower_limit = new BigDecimal(0.0);
+		upper_limit = new BigDecimal(1.0);
+		range = new BigDecimal(1.0);
 	}
 	
 	

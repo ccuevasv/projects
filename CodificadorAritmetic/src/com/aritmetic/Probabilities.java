@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 public class Probabilities {
 	
 	private char[] message;
-	private int decimals = 3;
+	private int decimals = 10;
 	private HashMap<String, Double[]> ranges;
 	private String[] uniqueValues;
 	private HashMap<String, Double> probabilities;
