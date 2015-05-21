@@ -3,6 +3,8 @@ package com.aritmetic;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
+import javax.naming.LimitExceededException;
+
 
 public class ArithmeticCoding {
 	
@@ -13,14 +15,15 @@ public class ArithmeticCoding {
 	private double lower_limit;
 	private double upper_limit;
 	private double range;
+	private double Z;
 	public HashMap<Integer, HashMap<String, String>> encode_output;
-	public HashMap<Integer, HashMap<String, String>> dencode_output;
+	public HashMap<Integer, HashMap<String, String>> decode_output;
 	
 	public ArithmeticCoding() {
 	}
 	
 	public String encode(String message) {
-		original_message = message;
+		original_message = message + "#";
 		initializeEncode();
 		HashMap<Integer, HashMap<String, String>> output = new HashMap<Integer, HashMap<String, String>>();
 		for (int i = 0; i < message.length(); i++) {
@@ -43,10 +46,45 @@ public class ArithmeticCoding {
 		return getBinaryIdentity(lower_limit, upper_limit);
 	}
 	
-	public String decode(String msg, Probabilities probs){
-		System.out.println(reverse(msg));
-		System.out.println(reverse("1011"));		
-		return "";
+	public String decode(String msg, Probabilities probabilities){
+		HashMap<Integer, HashMap<String, String>> output = new HashMap<Integer, HashMap<String, String>>();
+		String message = "";
+		String last_char = "";
+		int count = 0;
+		Double[] xy;
+		probs = probabilities;
+		initializeDecode();
+		Z = reverse(msg);
+		
+		while (!last_char.equals("#")) {
+			HashMap<String, String> iteration = new HashMap<String, String>();
+			
+			double otherZ = getZ();
+			last_char = probs.getSymbol(otherZ);
+			xy = probs.getRangeOf(last_char);
+			System.out.println(otherZ);
+			System.out.println(last_char);
+			
+			iteration.put("Z", String.valueOf(otherZ));
+			iteration.put("xy", xy[0]+", "+xy[1]);
+			iteration.put("symbol", last_char);
+			iteration.put("range", String.valueOf(range));
+			iteration.put("ranges", lower_limit+", "+upper_limit);
+			output.put(count, iteration);
+			count++;
+			message += last_char;
+			
+			upper_limit = getNewUpperLimit(probs.getY(last_char));
+			lower_limit = getNewLowerLimit(probs.getX(last_char));
+			
+			range = getNewRange();
+		}
+		decode_output = output;		
+		return message;
+	}
+	
+	private double getZ() {
+		return probs.redondear((Z-lower_limit)/range);
 	}
 	
 	private double reverse(String binary) {
@@ -76,19 +114,23 @@ public class ArithmeticCoding {
 	}
 	
 	private double getNewRange() {
-		return (upper_limit - lower_limit);
+		return probs.redondear(upper_limit - lower_limit);
 	}
 	
 	private double getNewLowerLimit(double x) {
-		return lower_limit + (range * x);
+		return probs.redondear(lower_limit + (range * x));
 	}
 	
 	private double getNewUpperLimit(double y) {
-		return lower_limit + (range * y);
+		return probs.redondear(lower_limit + (range * y));
 	}
 	
 	public HashMap<Integer, HashMap<String, String>> getEncodeOutput(){
 		return encode_output;
+	}
+	
+	public HashMap<Integer, HashMap<String, String>> getDecodeOutput(){
+		return decode_output;
 	}
 	
 	public Probabilities getProbs() {
@@ -96,6 +138,7 @@ public class ArithmeticCoding {
 	}
 	
 	private void initializeEncode() {
+		System.out.println(original_message);
 		probs = new Probabilities(original_message);
 		message = probs.getArrayMessage();
 		lower_limit = 0.0;

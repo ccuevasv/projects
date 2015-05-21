@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 public class Probabilities {
 	
 	private char[] message;
+	private int decimals = 25;
 	private HashMap<String, Double[]> ranges;
 	private String[] uniqueValues;
 	private HashMap<String, Double> probabilities;
@@ -87,10 +88,26 @@ public class Probabilities {
 					count++;
 				}
 			}
-			probabilities.put(uniqueValues[i], (count/size));
+			probabilities.put(uniqueValues[i], redondear(count/size));
 		}
 		return probabilities;
-	}	
+	}
+	
+	public double redondear( double numero) {
+	    return Math.round(numero*Math.pow(10,decimals))/Math.pow(10,decimals);
+	  }
+	
+	public String getSymbol(double z) {
+		Iterator<Entry<String, Double[]>> it = ranges.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, Double[]> entry = it.next();
+
+			if ((z > entry.getValue()[0]) && ( z <= entry.getValue()[1])) {
+				return entry.getKey();
+			}
+		}
+		return "??";
+	}
 	
 	@SuppressWarnings("rawtypes")
 	public HashMap<String, Double[]> getRanges() {
@@ -100,8 +117,8 @@ public class Probabilities {
 		double last = 0.0;
 		while (it.hasNext()) {
 			Map.Entry pair = (Map.Entry) it.next();
-			ranges.put((String) pair.getKey(), new Double[]{last, (last+((double) pair.getValue()))});
-			last += (double) pair.getValue();
+			ranges.put((String) pair.getKey(), new Double[]{redondear(last), redondear((last+((double) pair.getValue())) ) });
+			last += redondear((double) pair.getValue());
 			it.remove();
 		}
 		return ranges;
