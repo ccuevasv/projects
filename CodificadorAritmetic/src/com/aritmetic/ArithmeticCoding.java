@@ -26,16 +26,16 @@ public class ArithmeticCoding {
 		original_message = message + "#";
 		initializeEncode();
 		HashMap<Integer, HashMap<String, String>> output = new HashMap<Integer, HashMap<String, String>>();
-		for (int i = 0; i < message.length(); i++) {
+		for (int i = 0; i < original_message.length(); i++) {
 			HashMap<String, String> iteration = new HashMap<String, String>();
 
-			upper_limit = getNewUpperLimit(probs.getY(message.charAt(i)+""));
-			lower_limit = getNewLowerLimit(probs.getX(message.charAt(i)+""));
-			Double[] xy = probs.getRangeOf(message.charAt(i)+"");
+			upper_limit = getNewUpperLimit(probs.getY(original_message.charAt(i)+""));
+			lower_limit = getNewLowerLimit(probs.getX(original_message.charAt(i)+""));
+			Double[] xy = probs.getRangeOf(original_message.charAt(i)+"");
 			double [] r = new double[]{lower_limit, upper_limit};
 			
 			iteration.put("xy", xy[0]+", "+xy[1]);
-			iteration.put("symbol", message.charAt(i)+"");
+			iteration.put("symbol", original_message.charAt(i)+"");
 			iteration.put("range", String.valueOf(range));
 			iteration.put("ranges", r[0]+", "+r[1]);
 			output.put(i, iteration);
@@ -84,7 +84,7 @@ public class ArithmeticCoding {
 	}
 	
 	private double getZ() {
-		return probs.redondear((Z-lower_limit)/range);
+		return ((probs.redondear(Z)-probs.redondear(lower_limit))/probs.redondear(range));
 	}
 	
 	private double reverse(String binary) {
@@ -114,15 +114,17 @@ public class ArithmeticCoding {
 	}
 	
 	private double getNewRange() {
-		return probs.redondear(upper_limit - lower_limit);
+//		double range = probs.redondear(upper_limit) - probs.redondear(lower_limit);
+//		return probs.redondear(range);
+		return (upper_limit - lower_limit);
 	}
 	
 	private double getNewLowerLimit(double x) {
-		return probs.redondear(lower_limit + (range * x));
+		return (lower_limit + (range * x));
 	}
 	
 	private double getNewUpperLimit(double y) {
-		return probs.redondear(lower_limit + (range * y));
+		return (lower_limit + (range * y));
 	}
 	
 	public HashMap<Integer, HashMap<String, String>> getEncodeOutput(){
